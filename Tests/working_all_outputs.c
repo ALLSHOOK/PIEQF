@@ -1,8 +1,8 @@
 /***************************************************************************
  *
- *  1-21.c
+ *  all_outputs.c
  *
- *  This program is used to drive HV1 to HV21 Vertical Motion Cylinders.
+ *  This program is used to test the PCI-DDA02/16 outputs on on ports.
  *  A mix of Warren Jaspers test_dda0X-1.6.c and Curt Wuollet's smio.c
  *  Linux loadable module(pci-dda0X_16).
  *
@@ -204,9 +204,8 @@ main(int argc,char *argv[])
 
     setup_io();
     mapp->flags = 0;
-
-
-    for (cnt = 0; cnt < 176; cnt++) //&& cnt<176 )
+    
+     for (cnt = 0; cnt < 192; cnt++) //&& cnt<192 )
     {
         while(mapp->flags != 0) ;
         mapp->flags = 1;
@@ -216,6 +215,20 @@ main(int argc,char *argv[])
         mapp->flags = 0;
         usleep(ms);
     }
+
+
+ //   while( TRUE ) //&& cnt<200 )
+ //   {
+ //       while(mapp->flags != 0) ;
+ //       mapp->flags = 1;
+//	solve();   
+//	printf("count: %d\n", cnt);
+ //       write_io();
+ //       mapp->flags = 0;
+ //       usleep(ms);
+//	cnt++;
+ //   }
+
 }
 void setup_io(void)
 {
@@ -299,206 +312,224 @@ void solve(void)
 
 // Sequential Order of HV1-21 floor pieces lifting with a half second delay between each
 
-        if(cnt==0)   { usleep (10000); } 	// Power On
-	     if(cnt==1)   { qpow; }
-        if(cnt==2)   { usleep(50000); }	// Pump Valve On
-        if(cnt==3)   { qpmp; }
-	     
-	     if(cnt==4)   { usleep (10000); }	// 10m/s
-		  if(cnt==5)   { q1a; }
-        if(cnt==6)   { usleep(50000); }	// 1/2sec
-        if(cnt==7)   { cq1a; }
-		  if(cnt==8)   { usleep (10000); }
-		  if(cnt==9)   { q1b; }
-		  if(cnt==10)   { usleep(50000); }
-        if(cnt==11)   { cq1b; }
+        if(cnt==0)   { usleep (10000); }
+	if(cnt==1)   { q1a; }
+        if(cnt==2)   { usleep(50000); }
+        if(cnt==3)   { cq1a; }
+	if(cnt==4)   { usleep (10000); }
+	if(cnt==5)   { q1b; }
+	if(cnt==6)   { usleep(50000); }
+        if(cnt==7)   { cq1b; }
          
-	     if(cnt==12)   { usleep (10000); }
-   	  if(cnt==13)   { q2a; }
+	if(cnt==8)   { usleep (10000); }
+        if(cnt==9)   { q2a; }
+        if(cnt==10)  { usleep(50000); }
+        if(cnt==11)  { cq2a; }
+	if(cnt==12)  { usleep (10000); }
+        if(cnt==13)  { q2b; }
         if(cnt==14)  { usleep(50000); }
-        if(cnt==15)  { cq2a; }
-	     if(cnt==16)  { usleep (10000); }
-        if(cnt==17)  { q2b; }
+        if(cnt==15)  { cq2b; }
+	
+	if(cnt==16)  { usleep (10000); }
+        if(cnt==17)  { q3a; }
         if(cnt==18)  { usleep(50000); }
-        if(cnt==19)  { cq2b; }
-	
-		  if(cnt==20)  { usleep (10000); }
-        if(cnt==21)  { q3a; }
+        if(cnt==19)  { cq3a; }
+	if(cnt==20)  { usleep (10000); }
+        if(cnt==21)  { q3b; }
         if(cnt==22)  { usleep(50000); }
-        if(cnt==23)  { cq3a; }
-	     if(cnt==24)  { usleep (10000); }
-        if(cnt==25)  { q3b; }
+        if(cnt==23)  { cq3b; }
+        
+	if(cnt==24)  { usleep (10000); } 
+        if(cnt==25)  { q4a; }
         if(cnt==26)  { usleep(50000); }
-        if(cnt==27)  { cq3b; }
-        
-	     if(cnt==28)  { usleep (10000); } 
-        if(cnt==29)  { q4a; }
+        if(cnt==27)  { cq4a; }
+	if(cnt==28)  { usleep (10000); } 
+	if(cnt==29)  { q4b; }
         if(cnt==30)  { usleep(50000); }
-        if(cnt==31)  { cq4a; }
-	     if(cnt==32)  { usleep (10000); } 
-	     if(cnt==33)  { q4b; }
+        if(cnt==31)  { cq4b; }
+	
+	if(cnt==32)  { usleep (10000); } 
+        if(cnt==33)  { q5a; }
         if(cnt==34)  { usleep(50000); }
-        if(cnt==35)  { cq4b; }
-	
-	     if(cnt==36)  { usleep (10000); } 
-        if(cnt==37)  { q5a; }
+        if(cnt==35)  { cq5a; }
+	if(cnt==36)  { usleep (10000); } 
+        if(cnt==37)  { q5b; }
         if(cnt==38)  { usleep(50000); }
-        if(cnt==39)  { cq5a; }
-	 	  if(cnt==40)  { usleep (10000); } 
-        if(cnt==41)  { q5b; }
+        if(cnt==39)  { cq5b; }
+	
+	if(cnt==40)  { usleep (10000); } 
+        if(cnt==41)  { q6a; }
         if(cnt==42)  { usleep(50000); }
-        if(cnt==43)  { cq5b; }
-	
-		  if(cnt==44)  { usleep (10000); } 
-        if(cnt==45)  { q6a; }
+        if(cnt==43)  { cq6a; }
+	if(cnt==44)  { usleep (10000); } 
+        if(cnt==45)  { q6b; }
         if(cnt==46)  { usleep(50000); }
-        if(cnt==47)  { cq6a; }
-		  if(cnt==48)  { usleep (10000); } 
-        if(cnt==49)  { q6b; }
+        if(cnt==47)  { cq6b; }
+	
+	if(cnt==48)  { usleep (10000); } 
+        if(cnt==49)  { q7a; }
         if(cnt==50)  { usleep(50000); }
-        if(cnt==51)  { cq6b; }
-	
-		  if(cnt==52)  { usleep (10000); } 
-        if(cnt==53)  { q7a; }
+        if(cnt==51)  { cq7a; }
+	if(cnt==52)  { usleep (10000); } 
+        if(cnt==53)  { q7b; }
         if(cnt==54)  { usleep(50000); }
-        if(cnt==55)  { cq7a; }
-		  if(cnt==56)  { usleep (10000); } 
-        if(cnt==57)  { q7b; }
+        if(cnt==55)  { cq7b; }
+	
+	if(cnt==56)  { usleep (10000); } 
+        if(cnt==57)  { q8a; }
         if(cnt==58)  { usleep(50000); }
-        if(cnt==59)  { cq7b; }
-	
-		  if(cnt==60)  { usleep (10000); } 
-        if(cnt==61)  { q8a; }
+        if(cnt==59)  { cq8a; }
+	if(cnt==60)  { usleep (10000); } 
+        if(cnt==61)  { q8b; }
         if(cnt==62)  { usleep(50000); }
-        if(cnt==63)  { cq8a; }
-		  if(cnt==64)  { usleep (10000); } 
-        if(cnt==65)  { q8b; }
+        if(cnt==63)  { cq8b; }
+	
+	if(cnt==64)  { usleep (10000); } 
+        if(cnt==65)  { q9a; } 					/* NW */
         if(cnt==66)  { usleep(50000); }
-        if(cnt==67)  { cq8b; }
-	
-		  if(cnt==68)  { usleep (10000); } 
-        if(cnt==69)  { q9a; } 					
+        if(cnt==67)  { cq9a; }					/* NW */
+	if(cnt==68)  { usleep (10000); } 
+        if(cnt==69)  { q9b; }						/* NW */
         if(cnt==70)  { usleep(50000); }
-        if(cnt==71)  { cq9a; }					
-		  if(cnt==72)  { usleep (10000); } 
-        if(cnt==73)  { q9b; }						
-        if(cnt==74)  { usleep(50000); }
-        if(cnt==75)  { cq9b; }					
+        if(cnt==71)  { cq9b; }					/* NW */
 	
-		  if(cnt==76)  { usleep (10000); } 
-        if(cnt==77)  { q10a; }					
+	if(cnt==72)  { usleep (10000); } 
+        if(cnt==73)  { q10a; }					/* NW */
+        if(cnt==74)  { usleep(50000); }
+        if(cnt==75)  { cq10a; }					/* NW */
+	if(cnt==76)  { usleep (10000); } 
+        if(cnt==77)  { q10b; }					/* NW */
         if(cnt==78)  { usleep(50000); }
-        if(cnt==79)  { cq10a; }					
-		  if(cnt==80)  { usleep (10000); } 
-        if(cnt==81)  { q10b; }					
-        if(cnt==82)  { usleep(50000); }
-        if(cnt==83)  { cq10b; }					
+        if(cnt==79)  { cq10b; }					/* NW */
        
-		  if(cnt==84)  { usleep (10000); } 
-        if(cnt==85)  { q11a; }					
+	if(cnt==80)  { usleep (10000); } 
+        if(cnt==81)  { q11a; }					/* NW */
+        if(cnt==82)  { usleep(50000); }
+        if(cnt==83)  { cq11a; }					/* NW */
+	if(cnt==84)  { usleep (10000); } 
+        if(cnt==85)  { q11b; }					/* NW */
         if(cnt==86)  { usleep(50000); }
-        if(cnt==87)  { cq11a; }					
-		  if(cnt==88)  { usleep (10000); } 
-        if(cnt==89)  { q11b; }					
-        if(cnt==90)  { usleep(50000); }
-        if(cnt==91)  { cq11b; }					
+        if(cnt==87)  { cq11b; }					/* NW */
  
-		  if(cnt==92)  { usleep (10000); } 
-        if(cnt==93)  { q12a; }					
+	if(cnt==88)  { usleep (10000); } 
+        if(cnt==89)  { q12a; }					/* NW */
+        if(cnt==90)  { usleep(50000); }
+        if(cnt==91)  { cq12a; }					/* NW */
+	if(cnt==92)  { usleep (10000); } 
+        if(cnt==93)  { q12b; }					/* NW */
         if(cnt==94)  { usleep(50000); }
-        if(cnt==95)  { cq12a; }					
-		  if(cnt==96)  { usleep (10000); } 
-        if(cnt==97)  { q12b; }					
+        if(cnt==95)  { cq12b; }					/* NW */
+
+	if(cnt==96)  { usleep (10000); } 
+        if(cnt==97)  { q13a; }
         if(cnt==98)  { usleep(50000); }
-        if(cnt==99)  { cq12b; }					
+        if(cnt==99)  { cq13a; }
+	if(cnt==100) { usleep (10000); } 
+        if(cnt==101) { q13b; }
+        if(cnt==102) { usleep(50000); }
+        if(cnt==103) { cq13b; }
 
-		  if(cnt==100)  { usleep (10000); } 
-        if(cnt==101)  { q13a; }
-        if(cnt==102)  { usleep(50000); }
-        if(cnt==103)  { cq13a; }
-		  if(cnt==104) { usleep (10000); } 
-        if(cnt==105) { q13b; }
+	if(cnt==104) { usleep (10000); } 
+        if(cnt==105) { q14a; }
         if(cnt==106) { usleep(50000); }
-        if(cnt==107) { cq13b; }
-
-		  if(cnt==108) { usleep (10000); } 
-        if(cnt==109) { q14a; }
+        if(cnt==107) { cq14a; }
+	if(cnt==108) { usleep (10000); } 
+        if(cnt==109) { q14b; }
         if(cnt==110) { usleep(50000); }
-        if(cnt==111) { cq14a; }
-	  	  if(cnt==112) { usleep (10000); } 
-        if(cnt==113) { q14b; }
+        if(cnt==111) { cq14b; }
+
+	if(cnt==112) { usleep (10000); } 
+        if(cnt==113) { q15a; }
         if(cnt==114) { usleep(50000); }
-        if(cnt==115) { cq14b; }
-
-		  if(cnt==116) { usleep (10000); } 
-        if(cnt==117) { q15a; }
+        if(cnt==115) { cq15a; }
+	if(cnt==116) { usleep (10000); } 
+        if(cnt==117) { q15b; }
         if(cnt==118) { usleep(50000); }
-        if(cnt==119) { cq15a; }
-		  if(cnt==120) { usleep (10000); } 
-        if(cnt==121) { q15b; }
+        if(cnt==119) { cq15b; }
+
+	if(cnt==120) { usleep (10000); } 
+        if(cnt==121) { q16a; }
         if(cnt==122) { usleep(50000); }
-        if(cnt==123) { cq15b; }
-
-		  if(cnt==124) { usleep (10000); } 
-        if(cnt==125) { q16a; }
+        if(cnt==123) { cq16a; }
+	if(cnt==124) { usleep (10000); } 
+        if(cnt==125) { q16b; }
         if(cnt==126) { usleep(50000); }
-        if(cnt==127) { cq16a; }
-		  if(cnt==128) { usleep (10000); } 
-        if(cnt==129) { q16b; }
+        if(cnt==127) { cq16b; }
+
+	if(cnt==128) { usleep (10000); } 
+        if(cnt==129) { q17a; }
         if(cnt==130) { usleep(50000); }
-        if(cnt==131) { cq16b; }
-
-		  if(cnt==132) { usleep (10000); } 
-        if(cnt==133) { q17a; }
+        if(cnt==131) { cq17a; }
+	if(cnt==132) { usleep (10000); } 
+        if(cnt==133) { q17b; }
         if(cnt==134) { usleep(50000); }
-        if(cnt==135) { cq17a; }
-		  if(cnt==136) { usleep (10000); } 
-        if(cnt==137) { q17b; }
+        if(cnt==135) { cq17b; }
+
+	if(cnt==136) { usleep (10000); } 
+        if(cnt==137) { q18a; }
         if(cnt==138) { usleep(50000); }
-        if(cnt==139) { cq17b; }
-
-		  if(cnt==140) { usleep (10000); } 
-        if(cnt==141) { q18a; }
+        if(cnt==139) { cq18a; }
+	if(cnt==140) { usleep (10000); } 
+        if(cnt==141) { q18b; }
         if(cnt==142) { usleep(50000); }
-        if(cnt==143) { cq18a; }
-		  if(cnt==144) { usleep (10000); } 
-        if(cnt==145) { q18b; }
+        if(cnt==143) { cq18b; }
+
+	if(cnt==144) { usleep (10000); } 
+        if(cnt==145) { q19a; }
         if(cnt==146) { usleep(50000); }
-        if(cnt==147) { cq18b; }
-
-		  if(cnt==148) { usleep (10000); } 
-        if(cnt==149) { q19a; }
+        if(cnt==147) { cq19a; }
+	if(cnt==148) { usleep (10000); } 
+        if(cnt==149) { q19b; }
         if(cnt==150) { usleep(50000); }
-        if(cnt==151) { cq19a; }
-		  if(cnt==152) { usleep (10000); } 
-        if(cnt==153) { q19b; }
+        if(cnt==151) { cq19b; }
+
+	if(cnt==152) { usleep (10000); } 
+        if(cnt==153) { q20a; }
         if(cnt==154) { usleep(50000); }
-        if(cnt==155) { cq19b; }
-
-		  if(cnt==156) { usleep (10000); } 
-        if(cnt==157) { q20a; }
+        if(cnt==155) { cq20a; }
+	if(cnt==156) { usleep (10000); } 
+        if(cnt==157) { q20b; }
         if(cnt==158) { usleep(50000); }
-        if(cnt==159) { cq20a; }
-		  if(cnt==160) { usleep (10000); } 
-        if(cnt==161) { q20b; }
-        if(cnt==162) { usleep(50000); }
-        if(cnt==163) { cq20b; }
+        if(cnt==159) { cq20b; }
 
-		  if(cnt==164) { usleep (10000); } 
-        if(cnt==165) { q21a; }
+	if(cnt==160) { usleep (10000); } 
+        if(cnt==161) { q21a; }
+        if(cnt==162) { usleep(50000); }
+        if(cnt==163) { cq21a; }
+	if(cnt==164) { usleep (10000); } 
+        if(cnt==165) { q21b; }
         if(cnt==166) { usleep(50000); }
-        if(cnt==167) { cq21a; }
-		  if(cnt==168) { usleep (10000); } 
-        if(cnt==169) { q21b; }
+        if(cnt==167) { cq21b; }
+        
+   if(cnt==168) { usleep (10000); } 
+        if(cnt==169) { qh1a; }
         if(cnt==170) { usleep(50000); }
-        if(cnt==171) { cq21b; }
-        
-   	  if(cnt==172) { usleep (10000); } 
-        if(cnt==173) { cqpmp; }
+        if(cnt==171) { cqh1a; }
+	if(cnt==172) { usleep (10000); } 
+        if(cnt==173) { qh1b; }
         if(cnt==174) { usleep(50000); }
-        if(cnt==175) { cqpow; } 
+        if(cnt==175) { cqh1b; }
         
-		  if(cnt==176) ;
+   if(cnt==176) { usleep (10000); } 
+        if(cnt==177) { qAa; }
+        if(cnt==178) { usleep(50000); }
+        if(cnt==179) { cqAa; }
+	if(cnt==180) { usleep (10000); } 
+        if(cnt==181) { qAb; }
+        if(cnt==182) { usleep(50000); }
+        if(cnt==183) { cqAb; }
+        
+   if(cnt==184) { usleep (10000); } 
+        if(cnt==185) { qpmp; }
+        if(cnt==186) { usleep(50000); }
+        if(cnt==187) { cqpmp; }
+	if(cnt==188) { usleep (10000); } 
+        if(cnt==189) { qpow; }
+        if(cnt==190) { usleep(50000); }
+        if(cnt==191) { cqpow; }     
+     
+
+   if(cnt==192) ;
 
 }
 /*

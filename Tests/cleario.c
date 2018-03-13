@@ -1,8 +1,8 @@
 /***************************************************************************
  *
- *  1-21.c
+ *  cleario.c
  *
- *  This program is used to drive HV1 to HV21 Vertical Motion Cylinders.
+ *  This program is used to close all outputs on the PCI-DDA02-16
  *  A mix of Warren Jaspers test_dda0X-1.6.c and Curt Wuollet's smio.c
  *  Linux loadable module(pci-dda0X_16).
  *
@@ -46,14 +46,14 @@
 #define q7b   set_o(2,5)		/* (14) set hv7b  solenoid */ 
 #define q8a   set_o(2,6)		/* (15) set hv8a  solenoid */
 #define q8b   set_o(2,7)		/* (16) set hv8b  solenoid */
-#define q9a   set_o(2,8)  		/* NW (17) set hv9a  solenoid */
-#define q9b   set_o(2,9)		/* NW (18) set hv9b  solenoid */ 
-#define q10a  set_o(2,10)		/* NW (19) set hv10a solenoid */ 
-#define q10b  set_o(2,11)		/* NW (20) set hv10b solenoid */
-#define q11a  set_o(2,12)		/* NW (21) set hv11a solenoid */
-#define q11b  set_o(2,13)		/* NW (22) set hv11b solenoid */
-#define q12a  set_o(2,14)		/* NW (23)	set hv12a solenoid */
-#define q12b  set_o(2,15)		/* NW (24) set hv12b solenoid */
+#define q9a   set_o(2,8)  		/* (17) set hv9a  solenoid */
+#define q9b   set_o(2,9)		/* (18) set hv9b  solenoid */ 
+#define q10a  set_o(2,10)		/* (19) set hv10a solenoid */ 
+#define q10b  set_o(2,11)		/* (20) set hv10b solenoid */
+#define q11a  set_o(2,12)		/* (21) set hv11a solenoid */
+#define q11b  set_o(2,13)		/* (22) set hv11b solenoid */
+#define q12a  set_o(2,14)		/* (23)	set hv12a solenoid */
+#define q12b  set_o(2,15)		/* (24) set hv12b solenoid */
 #define q13a  set_o(0,0) 		/* (25) set hv13a solenoid */	
 #define q13b  set_o(0,1)		/* (26) set hv13b solenoid */ 
 #define q14a  set_o(0,2) 		/* (27) set hv14a solenoid */
@@ -96,14 +96,14 @@
 #define cq7b  clr_o(2,5)		/* (14) reset hv7b  solenoid */ 
 #define cq8a  clr_o(2,6)		/* (15) reset hv8a  solenoid */
 #define cq8b  clr_o(2,7)		/* (16) reset hv8b  solenoid */
-#define cq9a  clr_o(2,8)  		/* NW (17) reset hv9a  solenoid */
-#define cq9b  clr_o(2,9)		/* NW (18) reset hv9b  solenoid */ 
-#define cq10a clr_o(2,10)		/* NW (19) reset hv10a solenoid */ 
-#define cq10b clr_o(2,11)		/* NW (20) reset hv10b solenoid */
-#define cq11a clr_o(2,12)		/* NW (21) reset hv11a solenoid */
-#define cq11b clr_o(2,13)		/* NW (22) reset hv11b solenoid */
-#define cq12a clr_o(2,14)		/* NW (23)	reset hv12a solenoid */
-#define cq12b clr_o(2,15)		/* NW (24) reset hv12b solenoid */
+#define cq9a  clr_o(2,8)  		/* (17) reset hv9a  solenoid */
+#define cq9b  clr_o(2,9)		/* (18) reset hv9b  solenoid */ 
+#define cq10a clr_o(2,10)		/* (19) reset hv10a solenoid */ 
+#define cq10b clr_o(2,11)		/* (20) reset hv10b solenoid */
+#define cq11a clr_o(2,12)		/* (21) reset hv11a solenoid */
+#define cq11b clr_o(2,13)		/* (22) reset hv11b solenoid */
+#define cq12a clr_o(2,14)		/* (23)	reset hv12a solenoid */
+#define cq12b clr_o(2,15)		/* (24) reset hv12b solenoid */
 #define cq13a clr_o(0,0) 		/* (25) reset hv13a solenoid */	
 #define cq13b clr_o(0,1)		/* (26) reset hv13b solenoid */ 
 #define cq14a clr_o(0,2) 		/* (27) reset hv14a solenoid */
@@ -130,16 +130,20 @@
 #define cqpow clr_o(1,7)		/* (48) reset 3phv  mains power */
 
 
-char *DevName = "/dev/dda0x-16/da0_0";	/* Changed from /dev/dio48H_1A */ 
+char *DevName = "/dev/dda0x-16/da0_0";	/* Changed from /dev/dio48H_1A */
 char DevNameIO[20];
 int  Mode     = 0;
 int  Status;
 int  mfd;
 BYTE  bReg;
 
-int fd_1A, fd_1B, fd_1C;
-int fd_2A, fd_2B, fd_2C;		/* Was fd_2A, fd_2B, fd_2C; */
+int fd_0A, fd_0B, fd_0C;		/* Was fd_1A, fd_1B, fd_1C; */
+int fd_1A, fd_1B, fd_1C;		/* Was fd_2A, fd_2B, fd_2C; */
 unsigned short value;
+
+//static int fd_dac[8];    // we are only going to use 2 for this test.
+
+//int  DAC_Gain[4]  = {UP_10_0V, UP_10_0V, UP_10_0V, UP_10_0V};
 
 
 typedef struct
@@ -204,9 +208,8 @@ main(int argc,char *argv[])
 
     setup_io();
     mapp->flags = 0;
-
-
-    for (cnt = 0; cnt < 176; cnt++) //&& cnt<176 )
+    
+     for (cnt = 0; cnt < 2; cnt++) //&& cnt<2 )
     {
         while(mapp->flags != 0) ;
         mapp->flags = 1;
@@ -216,24 +219,56 @@ main(int argc,char *argv[])
         mapp->flags = 0;
         usleep(ms);
     }
+
+
+//    while( TRUE ) //&& cnt<200 )
+//    {
+//        while(mapp->flags != 0) ;
+//        mapp->flags = 1;
+//	solve();   
+//	printf("count: %d\n", cnt);
+//        write_io();
+//        mapp->flags = 0;
+//        usleep(ms);
+//	cnt++;
+//   }
+
 }
 void setup_io(void)
 {
-    /* open the dio */
+	/* open the dac */
+	
+//	 	strcpy(DevNameIO, "/dev/dda0X-16_DA0");
+// 	 if ((fd_dac[0] = open(DevNameIO, O_RDWR )) < 0) {
+//  	 perror("DevNameIO");
+//   	 printf("error opening device %s\n", DevNameIO);
+//   	 exit(2);
+// 	}
+// 	 ioctl(fd_dac[0], DAC_SET_GAINS, UP_10_0V);
+//
+//  	strcpy(DevNameIO, "/dev/dda0X-16_DA1");
+//  	if ((fd_dac[1] = open(DevNameIO, O_RDWR )) < 0) {
+//    perror("DevNameIO");
+//    printf("error opening device %s\n", DevNameIO);
+//    exit(2);
+// 	 }
+// 	 ioctl(fd_dac[1], DAC_SET_GAINS, UP_10_0V);
+   
+  /* open the dio */
      strcpy(DevNameIO, "/dev/dda0x-16/dio0_0A");
-  if ((fd_2A = open(DevNameIO, O_RDWR )) < 0) {
+  if ((fd_0A = open(DevNameIO, O_RDWR )) < 0) {
     perror("DevNameIO");
     printf("error opening device %s\n", DevNameIO);
     exit(2);
   }
   strcpy(DevNameIO, "/dev/dda0x-16/dio0_0B");
-  if ((fd_2B = open(DevNameIO, O_RDWR )) < 0) {
+  if ((fd_0B = open(DevNameIO, O_RDWR )) < 0) {
     perror(DevNameIO);
     printf("error opening device %s\n", DevNameIO);
     exit(2);
   }
   strcpy(DevNameIO, "/dev/dda0x-16/dio0_0C");
-  if ((fd_2C = open(DevNameIO, O_RDWR )) < 0) {
+  if ((fd_0C = open(DevNameIO, O_RDWR )) < 0) {
     perror(DevNameIO);
     printf("error opening device %s\n", DevNameIO);
     exit(2);
@@ -259,18 +294,18 @@ void setup_io(void)
     printf("error opening device %s\n", DevNameIO);
     exit(2);
   }
-    ioctl(fd_2A, DIO_SET_DIRECTION, 0);
-    ioctl(fd_2B, DIO_SET_DIRECTION, 0);
-    ioctl(fd_2C, DIO_SET_DIRECTION, 0);
+    ioctl(fd_0A, DIO_SET_DIRECTION, 0);
+    ioctl(fd_0B, DIO_SET_DIRECTION, 0);
+    ioctl(fd_0C, DIO_SET_DIRECTION, 0);
     ioctl(fd_1A, DIO_SET_DIRECTION, 0);
     ioctl(fd_1B, DIO_SET_DIRECTION, 0);
     ioctl(fd_1C, DIO_SET_DIRECTION, 0);
 }
 void close_io(void)
 {
-    close(fd_2A);
-    close(fd_2B);
-    close(fd_2C);
+    close(fd_0A);
+    close(fd_0B);
+    close(fd_0C);
     close(fd_1A);
     close(fd_1B);
     close(fd_1C);
@@ -289,216 +324,41 @@ void write_io(void)
     write(fd_1A,&buf[0],1) ;
     write(fd_1B,&buf[1],1) ;
     write(fd_1C,&buf[2],1) ;
-    write(fd_2A,&buf[3],1) ;
-    write(fd_2B,&buf[4],1) ;
-    write(fd_2C,&buf[5],1) ;
+    write(fd_0A,&buf[3],1) ;
+    write(fd_0B,&buf[4],1) ;
+    write(fd_0C,&buf[5],1) ;
 }
 
 void solve(void)
 {
 
-// Sequential Order of HV1-21 floor pieces lifting with a half second delay between each
+/* Set All Outputs To OFF  */
 
-        if(cnt==0)   { usleep (10000); } 	// Power On
-	     if(cnt==1)   { qpow; }
-        if(cnt==2)   { usleep(50000); }	// Pump Valve On
-        if(cnt==3)   { qpmp; }
-	     
-	     if(cnt==4)   { usleep (10000); }	// 10m/s
-		  if(cnt==5)   { q1a; }
-        if(cnt==6)   { usleep(50000); }	// 1/2sec
-        if(cnt==7)   { cq1a; }
-		  if(cnt==8)   { usleep (10000); }
-		  if(cnt==9)   { q1b; }
-		  if(cnt==10)   { usleep(50000); }
-        if(cnt==11)   { cq1b; }
-         
-	     if(cnt==12)   { usleep (10000); }
-   	  if(cnt==13)   { q2a; }
-        if(cnt==14)  { usleep(50000); }
-        if(cnt==15)  { cq2a; }
-	     if(cnt==16)  { usleep (10000); }
-        if(cnt==17)  { q2b; }
-        if(cnt==18)  { usleep(50000); }
-        if(cnt==19)  { cq2b; }
-	
-		  if(cnt==20)  { usleep (10000); }
-        if(cnt==21)  { q3a; }
-        if(cnt==22)  { usleep(50000); }
-        if(cnt==23)  { cq3a; }
-	     if(cnt==24)  { usleep (10000); }
-        if(cnt==25)  { q3b; }
-        if(cnt==26)  { usleep(50000); }
-        if(cnt==27)  { cq3b; }
-        
-	     if(cnt==28)  { usleep (10000); } 
-        if(cnt==29)  { q4a; }
-        if(cnt==30)  { usleep(50000); }
-        if(cnt==31)  { cq4a; }
-	     if(cnt==32)  { usleep (10000); } 
-	     if(cnt==33)  { q4b; }
-        if(cnt==34)  { usleep(50000); }
-        if(cnt==35)  { cq4b; }
-	
-	     if(cnt==36)  { usleep (10000); } 
-        if(cnt==37)  { q5a; }
-        if(cnt==38)  { usleep(50000); }
-        if(cnt==39)  { cq5a; }
-	 	  if(cnt==40)  { usleep (10000); } 
-        if(cnt==41)  { q5b; }
-        if(cnt==42)  { usleep(50000); }
-        if(cnt==43)  { cq5b; }
-	
-		  if(cnt==44)  { usleep (10000); } 
-        if(cnt==45)  { q6a; }
-        if(cnt==46)  { usleep(50000); }
-        if(cnt==47)  { cq6a; }
-		  if(cnt==48)  { usleep (10000); } 
-        if(cnt==49)  { q6b; }
-        if(cnt==50)  { usleep(50000); }
-        if(cnt==51)  { cq6b; }
-	
-		  if(cnt==52)  { usleep (10000); } 
-        if(cnt==53)  { q7a; }
-        if(cnt==54)  { usleep(50000); }
-        if(cnt==55)  { cq7a; }
-		  if(cnt==56)  { usleep (10000); } 
-        if(cnt==57)  { q7b; }
-        if(cnt==58)  { usleep(50000); }
-        if(cnt==59)  { cq7b; }
-	
-		  if(cnt==60)  { usleep (10000); } 
-        if(cnt==61)  { q8a; }
-        if(cnt==62)  { usleep(50000); }
-        if(cnt==63)  { cq8a; }
-		  if(cnt==64)  { usleep (10000); } 
-        if(cnt==65)  { q8b; }
-        if(cnt==66)  { usleep(50000); }
-        if(cnt==67)  { cq8b; }
-	
-		  if(cnt==68)  { usleep (10000); } 
-        if(cnt==69)  { q9a; } 					
-        if(cnt==70)  { usleep(50000); }
-        if(cnt==71)  { cq9a; }					
-		  if(cnt==72)  { usleep (10000); } 
-        if(cnt==73)  { q9b; }						
-        if(cnt==74)  { usleep(50000); }
-        if(cnt==75)  { cq9b; }					
-	
-		  if(cnt==76)  { usleep (10000); } 
-        if(cnt==77)  { q10a; }					
-        if(cnt==78)  { usleep(50000); }
-        if(cnt==79)  { cq10a; }					
-		  if(cnt==80)  { usleep (10000); } 
-        if(cnt==81)  { q10b; }					
-        if(cnt==82)  { usleep(50000); }
-        if(cnt==83)  { cq10b; }					
-       
-		  if(cnt==84)  { usleep (10000); } 
-        if(cnt==85)  { q11a; }					
-        if(cnt==86)  { usleep(50000); }
-        if(cnt==87)  { cq11a; }					
-		  if(cnt==88)  { usleep (10000); } 
-        if(cnt==89)  { q11b; }					
-        if(cnt==90)  { usleep(50000); }
-        if(cnt==91)  { cq11b; }					
- 
-		  if(cnt==92)  { usleep (10000); } 
-        if(cnt==93)  { q12a; }					
-        if(cnt==94)  { usleep(50000); }
-        if(cnt==95)  { cq12a; }					
-		  if(cnt==96)  { usleep (10000); } 
-        if(cnt==97)  { q12b; }					
-        if(cnt==98)  { usleep(50000); }
-        if(cnt==99)  { cq12b; }					
-
-		  if(cnt==100)  { usleep (10000); } 
-        if(cnt==101)  { q13a; }
-        if(cnt==102)  { usleep(50000); }
-        if(cnt==103)  { cq13a; }
-		  if(cnt==104) { usleep (10000); } 
-        if(cnt==105) { q13b; }
-        if(cnt==106) { usleep(50000); }
-        if(cnt==107) { cq13b; }
-
-		  if(cnt==108) { usleep (10000); } 
-        if(cnt==109) { q14a; }
-        if(cnt==110) { usleep(50000); }
-        if(cnt==111) { cq14a; }
-	  	  if(cnt==112) { usleep (10000); } 
-        if(cnt==113) { q14b; }
-        if(cnt==114) { usleep(50000); }
-        if(cnt==115) { cq14b; }
-
-		  if(cnt==116) { usleep (10000); } 
-        if(cnt==117) { q15a; }
-        if(cnt==118) { usleep(50000); }
-        if(cnt==119) { cq15a; }
-		  if(cnt==120) { usleep (10000); } 
-        if(cnt==121) { q15b; }
-        if(cnt==122) { usleep(50000); }
-        if(cnt==123) { cq15b; }
-
-		  if(cnt==124) { usleep (10000); } 
-        if(cnt==125) { q16a; }
-        if(cnt==126) { usleep(50000); }
-        if(cnt==127) { cq16a; }
-		  if(cnt==128) { usleep (10000); } 
-        if(cnt==129) { q16b; }
-        if(cnt==130) { usleep(50000); }
-        if(cnt==131) { cq16b; }
-
-		  if(cnt==132) { usleep (10000); } 
-        if(cnt==133) { q17a; }
-        if(cnt==134) { usleep(50000); }
-        if(cnt==135) { cq17a; }
-		  if(cnt==136) { usleep (10000); } 
-        if(cnt==137) { q17b; }
-        if(cnt==138) { usleep(50000); }
-        if(cnt==139) { cq17b; }
-
-		  if(cnt==140) { usleep (10000); } 
-        if(cnt==141) { q18a; }
-        if(cnt==142) { usleep(50000); }
-        if(cnt==143) { cq18a; }
-		  if(cnt==144) { usleep (10000); } 
-        if(cnt==145) { q18b; }
-        if(cnt==146) { usleep(50000); }
-        if(cnt==147) { cq18b; }
-
-		  if(cnt==148) { usleep (10000); } 
-        if(cnt==149) { q19a; }
-        if(cnt==150) { usleep(50000); }
-        if(cnt==151) { cq19a; }
-		  if(cnt==152) { usleep (10000); } 
-        if(cnt==153) { q19b; }
-        if(cnt==154) { usleep(50000); }
-        if(cnt==155) { cq19b; }
-
-		  if(cnt==156) { usleep (10000); } 
-        if(cnt==157) { q20a; }
-        if(cnt==158) { usleep(50000); }
-        if(cnt==159) { cq20a; }
-		  if(cnt==160) { usleep (10000); } 
-        if(cnt==161) { q20b; }
-        if(cnt==162) { usleep(50000); }
-        if(cnt==163) { cq20b; }
-
-		  if(cnt==164) { usleep (10000); } 
-        if(cnt==165) { q21a; }
-        if(cnt==166) { usleep(50000); }
-        if(cnt==167) { cq21a; }
-		  if(cnt==168) { usleep (10000); } 
-        if(cnt==169) { q21b; }
-        if(cnt==170) { usleep(50000); }
-        if(cnt==171) { cq21b; }
-        
-   	  if(cnt==172) { usleep (10000); } 
-        if(cnt==173) { cqpmp; }
-        if(cnt==174) { usleep(50000); }
-        if(cnt==175) { cqpow; } 
-        
-		  if(cnt==176) ;
+if(cnt==1)  { cq1a; cq1b; }
+        if(cnt==1)  { cq2a; cq2b; }
+        if(cnt==1)  { cq3a; cq3b; }
+        if(cnt==1)  { cq4a; cq4b; }
+        if(cnt==1)  { cq5a; cq5b; }
+        if(cnt==1)  { cq6a; cq6b; }
+        if(cnt==1)  { cq7a; cq7b; }
+        if(cnt==1)  { cq8a; cq8b; }
+        if(cnt==1)  { cq9a; cq9b; }
+        if(cnt==1) { cq10a; cq10b; }
+        if(cnt==1) { cq11a; cq11b; }
+        if(cnt==1) { cq12a; cq12b; }
+        if(cnt==1) { cq13a; cq13b; }
+        if(cnt==1) { cq14a; cq14b; }
+        if(cnt==1)  { cq15a; cq15b; }
+        if(cnt==1)  { cq16a; cq16b; }
+        if(cnt==1)  { cq17a; cq17b; }
+        if(cnt==1)  { cq18a; cq18b; }
+        if(cnt==1)  { cq19a; cq19b; }
+        if(cnt==1)  { cq20a; cq20b; }
+        if(cnt==1)  { cq21a; cq21b; }
+        if(cnt==1)  { cqh1a; cqh1b; }
+        if(cnt==1)  { cqAa; cqAb; }
+        if(cnt==1)  { cqpmp; cqpow; }
+        if(cnt==2)  { cnt=0; }
 
 }
 /*
