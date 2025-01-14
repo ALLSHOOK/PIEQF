@@ -10,5 +10,5 @@
 
 References:
 * http://pieqf.allshookup.org
-* https://earthquake.usgs.gov/research/parkfield/shake/](https://earthquake.usgs.gov/learn/parkfield/shake/
+* https://earthquake.usgs.gov/learn/parkfield/shake/
 * https://en.wikipedia.org/wiki/Parkfield_Interventional_EQ_Fieldwork
